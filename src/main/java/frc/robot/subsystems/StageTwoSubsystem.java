@@ -6,9 +6,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +25,7 @@ public class StageTwoSubsystem extends SubsystemBase {
   private CANSparkMax armMotorPrimary;
   private CANSparkMax armMotorSecondary;
   private AbsoluteEncoder encoder;
+  private PIDController pidController = new PIDController(1, 0,0);
 
 
 public StageTwoSubsystem(){
@@ -43,20 +48,35 @@ public StageTwoSubsystem(){
   armMotorSecondary.follow(armMotorPrimary, true);
 
   encoder = armMotorPrimary.getAbsoluteEncoder(Type.kDutyCycle);
+  configEncoder();
 }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("stageTwoAngle", getAngle());
+    SmartDashboard.putNumber("stageTwoAngle", Units.radiansToDegrees(getAngle()));
+    double stageTwoOut = pidController.calculate(getAngle());
+    double maxOut = 0.3;
+    stageTwoOut = Math.min(stageTwoOut,maxOut);
+    stageTwoOut = Math.max(stageTwoOut,-maxOut);
+    SmartDashboard.putNumber("stageTwoPIDOut", stageTwoOut);
+    armMotorPrimary.set(stageTwoOut);
   }
-  public void setPower(double power) {
-    armMotorPrimary.set(power);
+
+  public void setDesiredAngle(double setpoint){
+      pidController.setSetpoint(setpoint);
   }
 
   public double getAngle(){
     return encoder.getPosition() - Units.degreesToRadians(180);
     //return 0;
   }
+  private void configEncoder() {
+    encoder.setPositionConversionFactor((2 * Math.PI) /stageTwoEncoderRatio);
+    encoder.setVelocityConversionFactor(((2 * Math.PI) / stageTwoEncoderRatio) / 60);
+    encoder.setInverted(true);
+    encoder.setZeroOffset(stageTwoEncoderOffset);
+  }
+
     // This method will be called once per scheduler run
   }
 

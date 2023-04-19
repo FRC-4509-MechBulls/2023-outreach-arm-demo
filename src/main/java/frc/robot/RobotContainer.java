@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.nav.EFPathingTelemetrySub;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  GrabberSubsystem grabberSub = new GrabberSubsystem();
+  EFPathingTelemetrySub efPathingTelemetrySub = new EFPathingTelemetrySub();
+  GrabberSubsystem grabberSub = new GrabberSubsystem(efPathingTelemetrySub);
+
 
   Joystick operator1 = new Joystick(0);
   Joystick operator2 = new Joystick(1);
@@ -32,8 +35,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    grabberSub.setDefaultCommand(new RunCommand(()-> grabberSub.joyStickDrive(operator1.getY() *.4, operator2.getY()*.30), grabberSub));
+  //  grabberSub.setDefaultCommand(new RunCommand(()-> grabberSub.joyStickDrive(operator1.getY() *.4, operator2.getY()*.30), grabberSub));
   }
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

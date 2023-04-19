@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,9 @@ import static  frc.robot.Constants.ArmConstants.*;
 public class StageOneSubsystem extends SubsystemBase {
   private TalonSRX armMotorPrimary;
   private TalonSRX armMotorSecondary;
+
+  private PIDController pidController = new PIDController(8, 0,0);
+
   /** Creates a new StageOneSubsystem. */
   public StageOneSubsystem() {
     armMotorPrimary = new TalonSRX(stageOneRightId);
@@ -41,13 +45,23 @@ public class StageOneSubsystem extends SubsystemBase {
     armMotorSecondary.setNeutralMode(NeutralMode.Coast);
   }
 
-    public void setPower(double power) {
-      armMotorPrimary.set(TalonSRXControlMode.PercentOutput, power);
-    }
+  public void setDesiredAngle(double setpoint){
+    pidController.setSetpoint(setpoint);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("stageOneAngle", Units.radiansToDegrees(getAngle()));
+
+    double stageOneOut = pidController.calculate(getAngle());
+    double maxOut = 0.40;
+    stageOneOut = Math.min(stageOneOut,maxOut);
+    stageOneOut = Math.max(stageOneOut,-maxOut);
+    SmartDashboard.putNumber("stageOnePIDOut", stageOneOut);
+
+
+    armMotorPrimary.set(TalonSRXControlMode.PercentOutput,stageOneOut);
   }
   public double getAngle(){
     return armMotorPrimary.getSelectedSensorPosition()* stageOneEncoderTicksToRadians + stageOneEncoderOffset;
