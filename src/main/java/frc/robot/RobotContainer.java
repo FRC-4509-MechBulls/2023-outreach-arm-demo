@@ -4,13 +4,18 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.EFSub;
 import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.nav.EFPathingTelemetrySub;
 
 /**
@@ -22,10 +27,13 @@ import frc.robot.subsystems.nav.EFPathingTelemetrySub;
 public class RobotContainer {
   EFPathingTelemetrySub efPathingTelemetrySub = new EFPathingTelemetrySub();
   GrabberSubsystem grabberSub = new GrabberSubsystem(efPathingTelemetrySub);
+  SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
+  EFSub efSub = new EFSub();
 
   Joystick operator1 = new Joystick(0);
   Joystick operator2 = new Joystick(1);
+  XboxController xboxController = new XboxController(2);
   // The robot's subsystems and commands are defined here...
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -35,7 +43,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-  //  grabberSub.setDefaultCommand(new RunCommand(()-> grabberSub.joyStickDrive(operator1.getY() *.4, operator2.getY()*.30), grabberSub));
+    grabberSub.setDefaultCommand(new RunCommand(()-> grabberSub.joystickDrive(xboxController.getLeftY(),xboxController.getRightY()), grabberSub));
+    efSub.setDefaultCommand(new RunCommand(()->efSub.driveThing(xboxController.getLeftTriggerAxis() - xboxController.getRightTriggerAxis()),efSub));
+
   }
 
 
@@ -49,6 +59,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    new JoystickButton(xboxController, XboxController.Button.kA.value).whileTrue(new RunCommand(()->grabberSub.joystickDrive(operator1.getY()*0.5,operator2.getY()*0.5),grabberSub));
+    new JoystickButton(xboxController,XboxController.Button.kB.value).whileTrue(new InstantCommand(()->grabberSub.goHome()));
+
+    new JoystickButton(xboxController,XboxController.Button.kLeftBumper.value).whileTrue(new RunCommand(()->swerveSubsystem.joystickDrive(xboxController.getLeftY()*-1, xboxController.getLeftX()*-1, xboxController.getRightX()*-1),swerveSubsystem));
+    new JoystickButton(xboxController,XboxController.Button.kLeftBumper.value).whileTrue(new RunCommand(()->grabberSub.goHome(),grabberSub));
 
   }
 

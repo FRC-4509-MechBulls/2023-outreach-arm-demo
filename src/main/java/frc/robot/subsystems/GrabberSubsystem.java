@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,16 +18,15 @@ public class GrabberSubsystem extends SubsystemBase {
   private StageOneSubsystem stageOneSub;
   private StageTwoSubsystem stageTwoSub;
 
-  double stageOneSetpoint = 0;
-  double stageTwoSetpoint = 0;
+  double stageOneSetpoint = Units.degreesToRadians(70);
+  double stageTwoSetpoint = Units.degreesToRadians(-140);
   EFPathingTelemetrySub efPathingTelemetrySub;
 
   public GrabberSubsystem(EFPathingTelemetrySub efPathingTelemetrySub) {
     this.efPathingTelemetrySub = efPathingTelemetrySub;
     stageOneSub = new StageOneSubsystem();
     stageTwoSub = new StageTwoSubsystem();
-    SmartDashboard.putNumber("stageOneSetpoint",60);
-    SmartDashboard.putNumber("stageTwoSetpoint",-152);
+
 
   }
 
@@ -39,16 +39,46 @@ public class GrabberSubsystem extends SubsystemBase {
     y += Units.inchesToMeters(Constants.ArmConstants.stageTwoLength) * Math.sin(stageOneAng + stageTwoAng);
     return new double[]{x,y};
   }
+double lastControllerUpdateTime = Timer.getFPGATimestamp();
+
+  public void joystickDrive(double stageOneSpeed, double stageTwoSpeed){
+    double timeSinceLastUpdate = Timer.getFPGATimestamp() - lastControllerUpdateTime;
+    if(Math.abs(stageOneSpeed)<0.05) stageOneSpeed = 0;
+    if(Math.abs(stageTwoSpeed)<0.05) stageTwoSpeed = 0;
+
+    stageOneSetpoint += stageOneSpeed * Units.degreesToRadians(80) * timeSinceLastUpdate;
+    stageTwoSetpoint += stageTwoSpeed * Units.degreesToRadians(80) * timeSinceLastUpdate;
+
+    stageOneSub.setAff(stageOneSpeed * 0.75);
+    stageTwoSub.setAff(stageTwoSpeed * 0.25);
+
+    lastControllerUpdateTime = Timer.getFPGATimestamp();
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(stageOneSetpoint > Units.degreesToRadians(70)) stageOneSetpoint = Units.degreesToRadians(70);
+    if(stageOneSetpoint < Units.degreesToRadians(45)) stageOneSetpoint = Units.degreesToRadians(45);
+
+    if(stageTwoSetpoint > Units.degreesToRadians(-50)) stageTwoSetpoint = Units.degreesToRadians(-50);
+    if(stageTwoSetpoint < Units.degreesToRadians(-150)) stageTwoSetpoint = Units.degreesToRadians(-150);
+
+
+
     efPathingTelemetrySub.updateStageOneAngle(stageOneSub.getAngle());
     efPathingTelemetrySub.updateStageTwoAngle(stageTwoSub.getAngle());
-    efPathingTelemetrySub.updatePivotPoint(new Point2D.Double(2,2));
 
+    SmartDashboard.putNumber("stageOneSetpoint",Units.radiansToDegrees(stageOneSetpoint));
+    SmartDashboard.putNumber("stageTwoSetpoint",Units.radiansToDegrees(stageTwoSetpoint));
 
-    stageTwoSub.setDesiredAngle(Units.degreesToRadians(SmartDashboard.getNumber("stageTwoSetpoint",-152)));
-    stageOneSub.setDesiredAngle(Units.degreesToRadians(SmartDashboard.getNumber("stageOneSetpoint",60)));
+    stageOneSub.setDesiredAngle(stageOneSetpoint);
+    stageTwoSub.setDesiredAngle(stageTwoSetpoint);
+
+  }
+
+  public void goHome(){
+    stageOneSetpoint = Units.degreesToRadians(70);
+    stageTwoSetpoint = Units.degreesToRadians(-140);
   }
 }

@@ -19,7 +19,7 @@ public class StageOneSubsystem extends SubsystemBase {
   private TalonSRX armMotorPrimary;
   private TalonSRX armMotorSecondary;
 
-  private PIDController pidController = new PIDController(8, 0,0);
+  private PIDController pidController = new PIDController(2, 0,0);
 
   /** Creates a new StageOneSubsystem. */
   public StageOneSubsystem() {
@@ -49,13 +49,18 @@ public class StageOneSubsystem extends SubsystemBase {
     pidController.setSetpoint(setpoint);
   }
 
+  double aff = 0;
+  public void setAff(double aff){
+    this.aff = aff;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("stageOneAngle", Units.radiansToDegrees(getAngle()));
 
-    double stageOneOut = pidController.calculate(getAngle());
-    double maxOut = 0.40;
+    double stageOneOut = pidController.calculate(getAngle()) + aff;
+    double maxOut = 0.50;
     stageOneOut = Math.min(stageOneOut,maxOut);
     stageOneOut = Math.max(stageOneOut,-maxOut);
     SmartDashboard.putNumber("stageOnePIDOut", stageOneOut);
@@ -64,6 +69,6 @@ public class StageOneSubsystem extends SubsystemBase {
     armMotorPrimary.set(TalonSRXControlMode.PercentOutput,stageOneOut);
   }
   public double getAngle(){
-    return armMotorPrimary.getSelectedSensorPosition()* stageOneEncoderTicksToRadians + stageOneEncoderOffset;
+    return (armMotorPrimary.getSelectedSensorPosition()* stageOneEncoderTicksToRadians + stageOneEncoderOffset)%(Math.PI*2);
   }
 }

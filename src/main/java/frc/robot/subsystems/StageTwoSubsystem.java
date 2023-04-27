@@ -58,6 +58,7 @@ public StageTwoSubsystem(){
     double maxOut = 0.3;
     stageTwoOut = Math.min(stageTwoOut,maxOut);
     stageTwoOut = Math.max(stageTwoOut,-maxOut);
+    stageTwoOut +=aff;
     SmartDashboard.putNumber("stageTwoPIDOut", stageTwoOut);
     armMotorPrimary.set(stageTwoOut);
   }
@@ -66,8 +67,13 @@ public StageTwoSubsystem(){
       pidController.setSetpoint(setpoint);
   }
 
+  private double aff = 0;
+  public void setAff(double aff){
+    this.aff = aff;
+  }
+
   public double getAngle(){
-    return encoder.getPosition() - Units.degreesToRadians(180);
+    return (encoder.getPosition() - Units.degreesToRadians(180))%(Math.PI*2);
     //return 0;
   }
   private void configEncoder() {
