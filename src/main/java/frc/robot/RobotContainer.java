@@ -45,7 +45,7 @@ public class RobotContainer {
 
     grabberSub.setDefaultCommand(new RunCommand(()-> grabberSub.joystickDrive(xboxController.getLeftY(),xboxController.getRightY()), grabberSub));
     efSub.setDefaultCommand(new RunCommand(()->efSub.driveThing(xboxController.getLeftTriggerAxis() - xboxController.getRightTriggerAxis()),efSub));
-
+    swerveSubsystem.setDefaultCommand(new RunCommand(()->swerveSubsystem.joystickDrive(0,0,0),swerveSubsystem));
   }
 
 
@@ -63,7 +63,7 @@ public class RobotContainer {
     new JoystickButton(xboxController,XboxController.Button.kB.value).whileTrue(new InstantCommand(()->grabberSub.goHome()));
 
     new JoystickButton(xboxController,XboxController.Button.kLeftBumper.value).whileTrue(new RunCommand(()->swerveSubsystem.joystickDrive(xboxController.getLeftY()*-1, xboxController.getLeftX()*-1, xboxController.getRightX()*-1),swerveSubsystem));
-    new JoystickButton(xboxController,XboxController.Button.kLeftBumper.value).whileTrue(new RunCommand(()->grabberSub.goHome(),grabberSub));
+   // new JoystickButton(xboxController,XboxController.Button.kLeftBumper.value).whileTrue(new RunCommand(()->grabberSub.goHome(),grabberSub));
 
   }
 

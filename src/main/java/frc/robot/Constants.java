@@ -63,14 +63,14 @@ public final class Constants {
 
   public static class ArmConstants {
     public static final int stageOneLeftId =  11;
-    public static final int stageOneRightId = 12;
+    public static final int stageOneRightId = 13;
 
     public static final double continuousCurrentLimit = 20;
     public static final double peakCurrentLimit = 40;
     public static final double peakCurrentTime = 250;
 
-    public static final int stageTwoLeftId = 1;
-    public static final int stageTwoRightId = 2;
+    public static final int stageTwoLeftId = 49;
+    public static final int stageTwoRightId = 48;
 
     public static final int stageTwoSmartCurrentLimit = 40;
     public static final double stageTwoSecondaryCurrentLimit = 60;
@@ -134,16 +134,16 @@ public final class Constants {
     );
 
     //TBD
-    public static final int FRONT_LEFT_DRIVE_MOTOR_PORT = 3;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_PORT = 5;
-    public static final int BACK_LEFT_DRIVE_MOTOR_PORT = 7;
-    public static final int BACK_RIGHT_DRIVE_MOTOR_PORT = 9;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_PORT = 1;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_PORT = 6;
+    public static final int BACK_LEFT_DRIVE_MOTOR_PORT = 8;
+    public static final int BACK_RIGHT_DRIVE_MOTOR_PORT = 3;
 
     //TBD
     public static final int FRONT_LEFT_TURNING_MOTOR_PORT = 4;
-    public static final int FRONT_RIGHT_TURNING_MOTOR_PORT = 6;
-    public static final int BACK_LEFT_TURNING_MOTOR_PORT = 8;
-    public static final int BACK_RIGHT_TURNING_MOTOR_PORT = 10;
+    public static final int FRONT_RIGHT_TURNING_MOTOR_PORT = 5;
+    public static final int BACK_LEFT_TURNING_MOTOR_PORT = 2;
+    public static final int BACK_RIGHT_TURNING_MOTOR_PORT = 7;
 
     public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = false;
     public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
@@ -162,8 +162,8 @@ public final class Constants {
     public static final int BACK_RIGHT_DRIVE_ABSOLUTE_ENCODER_PORT = 3;
 
     //sort of calculated
-    public static final double FRONT_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -2.260 +Math.PI; //-2.29+Math.PI
-    public static final double FRONT_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -6.087+Math.PI; //-6.06+Math.PI
+    public static final double FRONT_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -2.260 -0.140 +Math.PI; //-2.29+Math.PI
+    public static final double FRONT_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -5.30+Math.PI; //-6.06+Math.PI
     public static final double BACK_LEFT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -5.420+Math.PI; //-2.25
     public static final double BACK_RIGHT_DRIVE_ABSOLUTE_ENCODER_OFFSET_RAD = -3.925+Math.PI; //-0.75
 

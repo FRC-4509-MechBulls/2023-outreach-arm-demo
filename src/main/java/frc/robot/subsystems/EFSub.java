@@ -21,8 +21,8 @@ public class EFSub extends SubsystemBase {
 
   /** Creates a new EndEffectorSubsystem. */
   public EFSub() {
-    efMotorTop = new TalonSRX(14);
-    efMotorBottom = new TalonSRX(13);
+    efMotorTop = new TalonSRX(12);
+    efMotorBottom = new TalonSRX(14);
 
     // setting motors to brake mode so they immediately stop moving when voltage stops being sent
     efMotorTop.setNeutralMode(NeutralMode.Coast);

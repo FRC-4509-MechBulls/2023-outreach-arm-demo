@@ -25,7 +25,7 @@ public class StageTwoSubsystem extends SubsystemBase {
   private CANSparkMax armMotorPrimary;
   private CANSparkMax armMotorSecondary;
   private AbsoluteEncoder encoder;
-  private PIDController pidController = new PIDController(1, 0,0);
+  private PIDController pidController = new PIDController(0.5, 0,0);
 
 
 public StageTwoSubsystem(){
