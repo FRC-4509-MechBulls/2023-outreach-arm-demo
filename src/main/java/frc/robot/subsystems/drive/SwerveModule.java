@@ -59,7 +59,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 251, 1000);
 
  //   driveMotor.configAllSettings(Robot.ctreConfigs.swerveDriveMotor, 1000);
-    driveMotor.setNeutralMode(NeutralMode.Coast);
+    driveMotor.setNeutralMode(NeutralMode.Brake);
     driveMotor.setInverted(driveMotorReversed);
       //debug output: driveMotor.config_kF(0, 0);
       //debug output: driveMotor.config_kP(0, 0);

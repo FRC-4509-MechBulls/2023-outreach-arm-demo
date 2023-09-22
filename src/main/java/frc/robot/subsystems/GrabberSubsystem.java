@@ -41,7 +41,11 @@ public class GrabberSubsystem extends SubsystemBase {
   }
 double lastControllerUpdateTime = Timer.getFPGATimestamp();
 
-  public void joystickDrive(double stageOneSpeed, double stageTwoSpeed){
+  public void joystickDrive(double stageOneSpeed, double stageTwoSpeed, boolean disabled){
+    if(disabled){
+      stageOneSpeed = 0;
+      stageTwoSpeed = 0;
+    }
     double timeSinceLastUpdate = Timer.getFPGATimestamp() - lastControllerUpdateTime;
     if(Math.abs(stageOneSpeed)<0.05) stageOneSpeed = 0;
     if(Math.abs(stageTwoSpeed)<0.05) stageTwoSpeed = 0;
